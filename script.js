@@ -21,6 +21,10 @@ const modeButtons = document.querySelectorAll(".mode-btn");
 const modeTrophies = document.querySelectorAll(".mode-trophy");
 const modeBestValues = document.querySelectorAll(".mode-best");
 
+const confettiContainer = document.createElement("div");
+confettiContainer.className = "confetti-container";
+document.body.appendChild(confettiContainer);
+
 const waterFacts = [
 	"About 71% of Earth is covered in water, but only a small part is fresh water we can use.",
 	"Turning off the faucet while brushing your teeth can save several gallons of water each day.",
@@ -571,6 +575,47 @@ function getRandomFact() {
 	return waterFacts[index];
 }
 
+function clearConfetti() {
+	confettiContainer.innerHTML = "";
+	confettiContainer.classList.remove("show");
+}
+
+function playConfettiBurst() {
+	clearConfetti();
+	confettiContainer.classList.add("show");
+
+	const confettiColors = ["#FFC907", "#003366", "#77A8BB", "#BF6C46", "#F3D2B6"];
+	const pieceCount = 90;
+
+	for (let pieceIndex = 0; pieceIndex < pieceCount; pieceIndex += 1) {
+		const piece = document.createElement("span");
+		piece.className = "confetti-piece";
+
+		const leftPercent = Math.random() * 100;
+		const size = 6 + Math.random() * 8;
+		const duration = 1400 + Math.random() * 1400;
+		const delay = Math.random() * 450;
+		const drift = -40 + Math.random() * 80;
+		const rotation = Math.random() * 720;
+		const color = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+
+		piece.style.left = `${leftPercent}%`;
+		piece.style.width = `${size}px`;
+		piece.style.height = `${Math.max(4, size * 0.5)}px`;
+		piece.style.backgroundColor = color;
+		piece.style.animationDuration = `${duration}ms`;
+		piece.style.animationDelay = `${delay}ms`;
+		piece.style.setProperty("--confetti-drift", `${drift}px`);
+		piece.style.setProperty("--confetti-rotate", `${rotation}deg`);
+
+		confettiContainer.appendChild(piece);
+	}
+
+	setTimeout(() => {
+		clearConfetti();
+	}, 3200);
+}
+
 function showVictoryScreen(isFinalLevel) {
 	gameState.isVictoryVisible = true;
 	gameState.isPaused = true;
@@ -582,6 +627,7 @@ function showVictoryScreen(isFinalLevel) {
 	if (isFinalLevel) {
 		unlockedNow = markModeCompleted(gameState.mode);
 		isNewBest = updateBestScore(gameState.mode, gameState.score);
+		playConfettiBurst();
 		victoryTitle.textContent = `${modeLabel} Mode Complete!`;
 		victoryText.textContent = `Final score: ${gameState.score}. You finished all 5 ${modeLabel.toLowerCase()} levels.${unlockedNow ? " Trophy earned!" : " Trophy already earned."}${isNewBest ? " New best score!" : ""}`;
 		victoryNextBtn.textContent = "Play Again";
