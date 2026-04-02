@@ -1,4 +1,5 @@
 const mazeElement = document.getElementById("maze");
+const modeValue = document.getElementById("modeValue");
 const levelValue = document.getElementById("levelValue");
 const scoreValue = document.getElementById("scoreValue");
 const timeValue = document.getElementById("timeValue");
@@ -14,7 +15,11 @@ const victoryNextBtn = document.getElementById("victoryNextBtn");
 const startBtn = document.getElementById("startBtn");
 const pauseBtn = document.getElementById("pauseBtn");
 const restartBtn = document.getElementById("restartBtn");
+const resetProgressBtn = document.getElementById("resetProgressBtn");
 const moveButtons = document.querySelectorAll(".move-btn");
+const modeButtons = document.querySelectorAll(".mode-btn");
+const modeTrophies = document.querySelectorAll(".mode-trophy");
+const modeBestValues = document.querySelectorAll(".mode-best");
 
 const waterFacts = [
 	"About 71% of Earth is covered in water, but only a small part is fresh water we can use.",
@@ -27,61 +32,343 @@ const waterFacts = [
 
 // Each level uses a simple grid map:
 // # = wall, . = open path, P = player start, C = clean water, D = dirty water
-const levels = [
-	{
-		time: 30,
-		map: [
-			"##########",
-			"#P..C....#",
-			"#.####.#.#",
-			"#....#.#.#",
-			"#.##.#.#.#",
-			"#..C...#.#",
-			"#.###.##.#",
-			"#....D...#",
-			"#..C.....#",
-			"##########"
-		]
-	},
-	{
-		time: 35,
-		map: [
-			"############",
-			"#P..#..C...#",
-			"#.###.####.#",
-			"#...#....#.#",
-			"###.#.##.#.#",
-			"#...#C.#...#",
-			"#.###..###.#",
-			"#...D....#.#",
-			"#.#####..#.#",
-			"#..C....D..#",
-			"#......C...#",
-			"############"
-		]
-	},
-	{
-		time: 40,
-		map: [
-			"##############",
-			"#P..#..C.....#",
-			"#.##.#.#####.#",
-			"#....#.....#.#",
-			"#.####.###.#.#",
-			"#..C...#...#.#",
-			"###.###.#.##.#",
-			"#...D.#.#....#",
-			"#.###.#.####.#",
-			"#..C..#....#.#",
-			"#.##.####.#..#",
-			"#...D...C....#",
-			"#.....C......#",
-			"##############"
-		]
+const difficultyLevels = {
+	easy: [
+		{
+			time: 30,
+			map: [
+				"##########",
+				"#P..C....#",
+				"#.####.#.#",
+				"#....#.#.#",
+				"#.##.#.#.#",
+				"#..C...#.#",
+				"#.###.##.#",
+				"#....D...#",
+				"#..C.....#",
+				"##########"
+			]
+		},
+		{
+			time: 32,
+			map: [
+				"##########",
+				"#P....C..#",
+				"#.####.#.#",
+				"#..C.#.#.#",
+				"#.##.#.#.#",
+				"#....D...#",
+				"#.###.##.#",
+				"#..C.....#",
+				"#........#",
+				"##########"
+			]
+		},
+		{
+			time: 34,
+			map: [
+				"##########",
+				"#P..#...C#",
+				"#.#.#.##.#",
+				"#.#...#..#",
+				"#.###.#.##",
+				"#...C.#..#",
+				"#.###.##.#",
+				"#..D.....#",
+				"#...C....#",
+				"##########"
+			]
+		},
+		{
+			time: 36,
+			map: [
+				"##########",
+				"#P.....C.#",
+				"#.####.#.#",
+				"#..C.#.#.#",
+				"#.#..#.#.#",
+				"#.#.##.#.#",
+				"#...D..#.#",
+				"#.###.##.#",
+				"#...C....#",
+				"##########"
+			]
+		},
+		{
+			time: 38,
+			map: [
+				"##########",
+				"#P....#C.#",
+				"#.##.#.#.#",
+				"#..#.#.#.#",
+				"##.#.#.#.#",
+				"#..#...#.#",
+				"#.###.##.#",
+				"#..D..C..#",
+				"#...C....#",
+				"##########"
+			]
+		}
+	],
+	normal: [
+		{
+			time: 35,
+			map: [
+				"############",
+				"#P..#..C...#",
+				"#.###.####.#",
+				"#...#....#.#",
+				"###.#.##.#.#",
+				"#...#C.#...#",
+				"#.###..###.#",
+				"#...D....#.#",
+				"#.#####..#.#",
+				"#..C....D..#",
+				"#......C...#",
+				"############"
+			]
+		},
+		{
+			time: 37,
+			map: [
+				"############",
+				"#P..#....C.#",
+				"#.###.##.#.#",
+				"#...#..#.#.#",
+				"#.#.##.#.#.#",
+				"#.#..C.#...#",
+				"#.####.###.#",
+				"#..D.....#.#",
+				"#.###.##.#.#",
+				"#..C...D...#",
+				"#......C...#",
+				"############"
+			]
+		},
+		{
+			time: 39,
+			map: [
+				"############",
+				"#P....#..C.#",
+				"#.##.##.#..#",
+				"#..#....##.#",
+				"##.#.##..#.#",
+				"#..#C.#..#.#",
+				"#.###.#.##.#",
+				"#..D..#....#",
+				"#.#######..#",
+				"#..C...D.C.#",
+				"#..........#",
+				"############"
+			]
+		},
+		{
+			time: 41,
+			map: [
+				"############",
+				"#P..#...C..#",
+				"#.#.#.##.#.#",
+				"#.#...#..#.#",
+				"#.###.#.##.#",
+				"#...#.#....#",
+				"###.#.####.#",
+				"#..C..D..#.#",
+				"#.######.#.#",
+				"#..D..C.C..#",
+				"#..........#",
+				"############"
+			]
+		},
+		{
+			time: 43,
+			map: [
+				"############",
+				"#P...#..C..#",
+				"#.##.#.##..#",
+				"#..#.#..#D.#",
+				"##.#.##.#..#",
+				"#..#..C.#.##",
+				"#.####.#...#",
+				"#..D...###.#",
+				"#.###.#....#",
+				"#..C..#.C..#",
+				"#..........#",
+				"############"
+			]
+		}
+	],
+	hard: [
+		{
+			time: 40,
+			map: [
+				"##############",
+				"#P..#..C.....#",
+				"#.##.#.#####.#",
+				"#....#.....#.#",
+				"#.####.###.#.#",
+				"#..C...#...#.#",
+				"###.###.#.##.#",
+				"#...D.#.#....#",
+				"#.###.#.####.#",
+				"#..C..#....#.#",
+				"#.##.####.#..#",
+				"#...D...C....#",
+				"#.....C......#",
+				"##############"
+			]
+		},
+		{
+			time: 42,
+			map: [
+				"##############",
+				"#P...#....C..#",
+				"#.##.#.#######",
+				"#..#.#......##",
+				"##.#.######..#",
+				"#..#..C...#..#",
+				"#.####.##.#.##",
+				"#....D.#..#..#",
+				"#.######.##..#",
+				"#..C..#...#..#",
+				"##.##.#.#.#..#",
+				"#..D..#.#.C..#",
+				"#....C.......#",
+				"##############"
+			]
+		},
+		{
+			time: 44,
+			map: [
+				"##############",
+				"#P..#....#C..#",
+				"#.#.#.##.#.#.#",
+				"#.#...#..#.#.#",
+				"#.###.#.##.#.#",
+				"#...#.#....#.#",
+				"###.#.####.#.#",
+				"#..C..D..#.#.#",
+				"#.######.#.#.#",
+				"#..D..#..#...#",
+				"##.##.#.####.#",
+				"#..C..#....#.#",
+				"#....C....C..#",
+				"##############"
+			]
+		},
+		{
+			time: 46,
+			map: [
+				"##############",
+				"#P....#..C...#",
+				"#.###.#.##.#.#",
+				"#...#.#..#.#.#",
+				"###.#.##.#.#.#",
+				"#...#..C.#.#.#",
+				"#.#####.##.#.#",
+				"#..D...#...#.#",
+				"#.###.###.##.#",
+				"#..C..#D..#..#",
+				"##.##.#.##.#.#",
+				"#..#..#....#.#",
+				"#..C....C....#",
+				"##############"
+			]
+		},
+		{
+			time: 48,
+			map: [
+				"##############",
+				"#P...#...#C..#",
+				"#.##.#.#.#.#.#",
+				"#..#...#...#.#",
+				"##.#####.###.#",
+				"#..C..#..D.#.#",
+				"#.###.#.##.#.#",
+				"#..D..#..#...#",
+				"##.##.##.#.###",
+				"#..C..#..#...#",
+				"#.####.#.###.#",
+				"#...D..#..C#.#",
+				"#..C.......C.#",
+				"##############"
+			]
+		}
+	]
+};
+
+const modeLabels = {
+	easy: "Easy",
+	normal: "Normal",
+	hard: "Hard"
+};
+
+const achievementsStorageKey = "cwCompletedModes";
+const bestScoresStorageKey = "cwBestScores";
+
+function getDefaultCompletedModes() {
+	return {
+		easy: false,
+		normal: false,
+		hard: false
+	};
+}
+
+function loadCompletedModes() {
+	const saved = localStorage.getItem(achievementsStorageKey);
+
+	if (!saved) {
+		return getDefaultCompletedModes();
 	}
-];
+
+	try {
+		const parsed = JSON.parse(saved);
+		return {
+			easy: Boolean(parsed.easy),
+			normal: Boolean(parsed.normal),
+			hard: Boolean(parsed.hard)
+		};
+	} catch (error) {
+		return getDefaultCompletedModes();
+	}
+}
+
+function saveCompletedModes(completedModes) {
+	localStorage.setItem(achievementsStorageKey, JSON.stringify(completedModes));
+}
+
+function getDefaultBestScores() {
+	return {
+		easy: 0,
+		normal: 0,
+		hard: 0
+	};
+}
+
+function loadBestScores() {
+	const saved = localStorage.getItem(bestScoresStorageKey);
+
+	if (!saved) {
+		return getDefaultBestScores();
+	}
+
+	try {
+		const parsed = JSON.parse(saved);
+		return {
+			easy: Number(parsed.easy) || 0,
+			normal: Number(parsed.normal) || 0,
+			hard: Number(parsed.hard) || 0
+		};
+	} catch (error) {
+		return getDefaultBestScores();
+	}
+}
+
+function saveBestScores(bestScores) {
+	localStorage.setItem(bestScoresStorageKey, JSON.stringify(bestScores));
+}
 
 const gameState = {
+	mode: "easy",
 	levelIndex: 0,
 	score: 0,
 	timeLeft: 0,
@@ -91,15 +378,21 @@ const gameState = {
 	timerId: null,
 	isPlaying: false,
 	isPaused: false,
-	isVictoryVisible: false
+	isVictoryVisible: false,
+	completedModes: loadCompletedModes(),
+	bestScores: loadBestScores()
 };
+
+function getCurrentModeLevels() {
+	return difficultyLevels[gameState.mode];
+}
 
 function cloneMapRows(mapRows) {
 	return mapRows.map((row) => row.split(""));
 }
 
 function loadLevel(levelIndex) {
-	const levelData = levels[levelIndex];
+	const levelData = getCurrentModeLevels()[levelIndex];
 	gameState.board = cloneMapRows(levelData.map);
 	gameState.timeLeft = levelData.time;
 	gameState.cleanLeft = 0;
@@ -176,10 +469,66 @@ function updateResponsiveCellSize(cols) {
 }
 
 function updateHud() {
-	levelValue.textContent = String(gameState.levelIndex + 1);
+	modeValue.textContent = modeLabels[gameState.mode];
+	levelValue.textContent = `${gameState.levelIndex + 1}/5`;
 	scoreValue.textContent = String(gameState.score);
 	timeValue.textContent = String(gameState.timeLeft);
 	cleanLeftValue.textContent = String(gameState.cleanLeft);
+}
+
+function updateModeButtons() {
+	modeButtons.forEach((button) => {
+		const isActive = button.dataset.mode === gameState.mode;
+		button.classList.toggle("active", isActive);
+	});
+
+	modeTrophies.forEach((trophy) => {
+		const mode = trophy.dataset.mode;
+		const isUnlocked = gameState.completedModes[mode];
+		trophy.classList.toggle("unlocked", isUnlocked);
+		trophy.setAttribute("aria-label", `${modeLabels[mode]} mode trophy ${isUnlocked ? "earned" : "not earned"}`);
+	});
+
+	modeBestValues.forEach((bestValue) => {
+		const mode = bestValue.dataset.mode;
+		bestValue.textContent = `Best: ${gameState.bestScores[mode]}`;
+	});
+}
+
+function updateControlButtons() {
+	pauseBtn.disabled = !gameState.isPlaying || gameState.isVictoryVisible;
+	restartBtn.disabled = gameState.isVictoryVisible;
+}
+
+function markModeCompleted(mode) {
+	if (gameState.completedModes[mode]) {
+		return false;
+	}
+
+	gameState.completedModes[mode] = true;
+	saveCompletedModes(gameState.completedModes);
+	updateModeButtons();
+	return true;
+}
+
+function updateBestScore(mode, score) {
+	if (score <= gameState.bestScores[mode]) {
+		return false;
+	}
+
+	gameState.bestScores[mode] = score;
+	saveBestScores(gameState.bestScores);
+	updateModeButtons();
+	return true;
+}
+
+function resetProgress() {
+	gameState.completedModes = getDefaultCompletedModes();
+	gameState.bestScores = getDefaultBestScores();
+	saveCompletedModes(gameState.completedModes);
+	saveBestScores(gameState.bestScores);
+	updateModeButtons();
+	setMessage("Progress reset. Trophies and best scores are now cleared.");
 }
 
 function setMessage(text) {
@@ -214,6 +563,7 @@ function gameOver(text) {
 	gameState.isPlaying = false;
 	stopTimer();
 	setMessage(text);
+	updateControlButtons();
 }
 
 function getRandomFact() {
@@ -225,10 +575,15 @@ function showVictoryScreen(isFinalLevel) {
 	gameState.isVictoryVisible = true;
 	gameState.isPaused = true;
 	stopTimer();
+	const modeLabel = modeLabels[gameState.mode];
+	let unlockedNow = false;
+	let isNewBest = false;
 
 	if (isFinalLevel) {
-		victoryTitle.textContent = "You Won The Game!";
-		victoryText.textContent = `Final score: ${gameState.score}. You collected clean water in every level.`;
+		unlockedNow = markModeCompleted(gameState.mode);
+		isNewBest = updateBestScore(gameState.mode, gameState.score);
+		victoryTitle.textContent = `${modeLabel} Mode Complete!`;
+		victoryText.textContent = `Final score: ${gameState.score}. You finished all 5 ${modeLabel.toLowerCase()} levels.${unlockedNow ? " Trophy earned!" : " Trophy already earned."}${isNewBest ? " New best score!" : ""}`;
 		victoryNextBtn.textContent = "Play Again";
 	} else {
 		victoryTitle.textContent = "Level Complete!";
@@ -238,20 +593,23 @@ function showVictoryScreen(isFinalLevel) {
 
 	factText.textContent = `Fun Fact: ${getRandomFact()}`;
 	victoryScreen.classList.remove("hidden");
+	updateControlButtons();
 }
 
 function hideVictoryScreen() {
 	gameState.isVictoryVisible = false;
 	gameState.isPaused = false;
 	victoryScreen.classList.add("hidden");
+	updateControlButtons();
 }
 
 function nextLevel() {
 	gameState.levelIndex += 1;
+	const modeLevels = getCurrentModeLevels();
 
-	if (gameState.levelIndex >= levels.length) {
+	if (gameState.levelIndex >= modeLevels.length) {
 		showVictoryScreen(true);
-		setMessage(`Amazing work! Final score: ${gameState.score}`);
+		setMessage(`Amazing work! You completed all 5 ${modeLabels[gameState.mode].toLowerCase()} levels.`);
 		return;
 	}
 
@@ -300,6 +658,10 @@ function movePlayer(direction) {
 	const nextRow = gameState.player.row + move.row;
 	const nextCol = gameState.player.col + move.col;
 
+	if (nextRow < 0 || nextRow >= gameState.board.length || nextCol < 0 || nextCol >= gameState.board[0].length) {
+		return;
+	}
+
 	if (gameState.board[nextRow][nextCol] === "#") {
 		return;
 	}
@@ -316,7 +678,7 @@ function movePlayer(direction) {
 
 	if (gameState.cleanLeft === 0) {
 		gameState.score += 20;
-		const isFinalLevel = gameState.levelIndex === levels.length - 1;
+		const isFinalLevel = gameState.levelIndex === getCurrentModeLevels().length - 1;
 		showVictoryScreen(isFinalLevel);
 		setMessage("You collected all clean water droplets!");
 		return;
@@ -330,10 +692,33 @@ function startGame() {
 	gameState.levelIndex = 0;
 	gameState.score = 0;
 	gameState.isPlaying = true;
+	gameState.isPaused = false;
+	pauseBtn.textContent = "Pause";
 	hideVictoryScreen();
 	loadLevel(gameState.levelIndex);
-	setMessage("Game started! Use arrow keys or buttons to move.");
+	setMessage(`${modeLabels[gameState.mode]} mode started! Use arrow keys or buttons to move.`);
+	updateControlButtons();
 	startTimer();
+}
+
+function setMode(mode) {
+	if (!difficultyLevels[mode]) {
+		return;
+	}
+
+	gameState.mode = mode;
+	gameState.levelIndex = 0;
+	gameState.score = 0;
+	gameState.isPlaying = false;
+	gameState.isPaused = false;
+	pauseBtn.textContent = "Pause";
+
+	stopTimer();
+	hideVictoryScreen();
+	updateModeButtons();
+	loadLevel(0);
+	setMessage(`${modeLabels[mode]} mode selected. Press Start Game to begin.`);
+	updateControlButtons();
 }
 
 function togglePause() {
@@ -354,12 +739,17 @@ function togglePause() {
 
 function restartCurrentLevel() {
 	if (!gameState.isPlaying) {
-		gameState.isPlaying = true;
+		hideVictoryScreen();
+		loadLevel(gameState.levelIndex);
+		setMessage("Level preview reset. Press Start Game to begin.");
+		updateControlButtons();
+		return;
 	}
 
 	hideVictoryScreen();
 	loadLevel(gameState.levelIndex);
 	setMessage("Level restarted.");
+	updateControlButtons();
 	startTimer();
 }
 
@@ -375,7 +765,7 @@ function handleVictoryReset() {
 }
 
 function handleVictoryNext() {
-	if (gameState.levelIndex === levels.length - 1) {
+	if (gameState.levelIndex === getCurrentModeLevels().length - 1) {
 		startGame();
 		return;
 	}
@@ -407,9 +797,16 @@ moveButtons.forEach((button) => {
 	});
 });
 
+modeButtons.forEach((button) => {
+	button.addEventListener("click", () => {
+		setMode(button.dataset.mode);
+	});
+});
+
 startBtn.addEventListener("click", startGame);
 pauseBtn.addEventListener("click", togglePause);
 restartBtn.addEventListener("click", restartCurrentLevel);
+resetProgressBtn.addEventListener("click", resetProgress);
 victoryResetBtn.addEventListener("click", handleVictoryReset);
 victoryNextBtn.addEventListener("click", handleVictoryNext);
 
@@ -419,5 +816,7 @@ window.addEventListener("resize", () => {
 	}
 });
 
-// Load the first level layout so players can see the game board before starting.
-loadLevel(0);
+// Show the first easy level board before the player starts the timer.
+setMode("easy");
+updateModeButtons();
+updateControlButtons();

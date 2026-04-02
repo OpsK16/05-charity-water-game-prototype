@@ -34,7 +34,7 @@ Secondary Colors:
 
 body {
 	margin: 0;
-	font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+	font-family: "Source Sans 3", "Avenir Next", "Segoe UI", sans-serif;
 	color: var(--cw-black);
 	background: linear-gradient(145deg, var(--cw-offwhite), #f3efe5);
 }
@@ -54,10 +54,80 @@ body {
 .game-header h1 {
 	margin: 0;
 	color: var(--cw-blue);
+	font-family: "Libre Baskerville", Georgia, serif;
+	letter-spacing: 0.2px;
 }
 
 .game-header p {
 	margin-top: 8px;
+}
+
+.difficulty {
+	margin: 16px 0;
+	padding: 12px;
+	background: #ffffff;
+	border-radius: 10px;
+	border-left: 5px solid var(--cw-yellow);
+}
+
+.difficulty-label {
+	margin: 0 0 8px;
+	font-weight: 700;
+}
+
+.difficulty-buttons {
+	display: flex;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+
+.mode-option {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.mode-best {
+	font-size: 14px;
+	font-weight: 700;
+	color: var(--cw-blue);
+	background: #eef5f8;
+	padding: 4px 8px;
+	border-radius: 999px;
+}
+
+.mode-btn {
+	background: var(--cw-cream);
+	color: var(--cw-black);
+	border: 2px solid transparent;
+}
+
+.mode-btn.active {
+	background: var(--cw-yellow);
+	border-color: var(--cw-blue);
+}
+
+.mode-trophy {
+	font-size: 20px;
+	line-height: 1;
+	opacity: 0.25;
+	filter: grayscale(1);
+	transition: opacity 0.2s ease;
+}
+
+.mode-trophy.unlocked {
+	opacity: 1;
+	filter: none;
+}
+
+.difficulty-actions {
+	margin-top: 10px;
+}
+
+#resetProgressBtn {
+	background: #ffffff;
+	color: var(--cw-blue);
+	border: 2px solid var(--cw-blue);
 }
 
 .hud {
@@ -87,6 +157,11 @@ button {
 	padding: 10px 14px;
 	font-weight: 700;
 	cursor: pointer;
+}
+
+button:disabled {
+	opacity: 0.55;
+	cursor: not-allowed;
 }
 
 #startBtn {
@@ -228,8 +303,26 @@ button {
 
 @media (min-width: 800px) {
 	.hud {
-		grid-template-columns: repeat(4, minmax(140px, 1fr));
+		grid-template-columns: repeat(5, minmax(130px, 1fr));
 	}
+}
+
+.site-footer {
+	margin-top: 20px;
+	padding: 14px;
+	background: #ffffff;
+	border-radius: 10px;
+	border-top: 4px solid var(--cw-yellow);
+}
+
+.site-footer p {
+	margin: 0;
+	font-weight: 600;
+}
+
+.site-footer a {
+	color: var(--cw-blue);
+	font-weight: 700;
 }
 
 @media (max-width: 600px) {

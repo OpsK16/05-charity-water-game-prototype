@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Charity Water Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -13,7 +16,32 @@
             <p>Collect all clean water droplets before time runs out. Avoid dirty water!</p>
         </header>
 
+        <section class="difficulty" aria-label="Difficulty mode">
+            <p class="difficulty-label">Choose a mode:</p>
+            <div class="difficulty-buttons" role="group" aria-label="Difficulty mode buttons">
+                <div class="mode-option">
+                    <button class="mode-btn active" data-mode="easy" type="button">Easy</button>
+                    <span class="mode-trophy" data-mode="easy" title="Easy mode trophy">🏆</span>
+                    <span class="mode-best" data-mode="easy">Best: 0</span>
+                </div>
+                <div class="mode-option">
+                    <button class="mode-btn" data-mode="normal" type="button">Normal</button>
+                    <span class="mode-trophy" data-mode="normal" title="Normal mode trophy">🏆</span>
+                    <span class="mode-best" data-mode="normal">Best: 0</span>
+                </div>
+                <div class="mode-option">
+                    <button class="mode-btn" data-mode="hard" type="button">Hard</button>
+                    <span class="mode-trophy" data-mode="hard" title="Hard mode trophy">🏆</span>
+                    <span class="mode-best" data-mode="hard">Best: 0</span>
+                </div>
+            </div>
+            <div class="difficulty-actions">
+                <button id="resetProgressBtn" type="button">Reset Trophies + Best Scores</button>
+            </div>
+        </section>
+
         <section class="hud" aria-label="Game status">
+            <div class="hud-item">Mode: <span id="modeValue">Easy</span></div>
             <div class="hud-item">Level: <span id="levelValue">1</span></div>
             <div class="hud-item">Score: <span id="scoreValue">0</span></div>
             <div class="hud-item">Time: <span id="timeValue">0</span>s</div>
@@ -55,6 +83,13 @@
                 <button class="move-btn" type="button" data-direction="right">Right</button>
             </div>
         </section>
+
+        <footer class="site-footer" aria-label="Donation link">
+            <p>
+                Help bring clean water to more people:
+                <a href="https://www.charitywater.org/" target="_blank" rel="noopener noreferrer">Donate at charity: water</a>
+            </p>
+        </footer>
     </main>
     <script src="script.js"></script>
 </body>
